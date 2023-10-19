@@ -8,7 +8,7 @@ public class Node
     public Coordinates cords;
     public float yCord;
     
-    public int movementCost; //this int tracks the current cost to move to a node when calculating the nodes availiable to be moved to. 
+    public int movementCost;//this int tracks the current cost to move to a node when calculating the nodes availiable to be moved to. 
     public int moveEcon = 1; //This int holds the amount that the node will deduct from your movement resource in order to move to it. essentially this int is the difference between taking 1 cost to travel through planes and 2 cost to travel through swamp, while the other one is the accumulation of movementEcons for a specific turn.
         
     

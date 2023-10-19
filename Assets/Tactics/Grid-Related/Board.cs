@@ -9,14 +9,16 @@ public class Board : MonoBehaviour
 List<Node> visitedNodes = new List<Node>(); //This list is used when finding the nodes that are able to be travelled by the unit whose turn it is. 
 Queue<Node> nodesToCheck = new Queue<Node>();
 
-List<Node> traversableNodes = new List<Node>();
-public Dictionary<Coordinates, Node> gameBoard = new Dictionary<Coordinates, Node>(); //This is a list of all the nodes in the map. 
+public List<Node> traversableNodes = new List<Node>();
+public Dictionary<Coordinates, Node> gameBoard = new Dictionary<Coordinates, Node>(); //This is a list of all the nodes in the map. The coordinates are the key which map to a node being the value.
 public int length; 
 public int width;    
 Coordinates testCords = new Coordinates(0,0);
 Node testNode;
 
 public int move;
+
+public Coordinates selectorStartPosition;
 
 //length and width of the board
 
@@ -58,17 +60,19 @@ private void OnDrawGizmos() {
         foreach(Node tile in gameBoard.Values) {
             
             Gizmos.color = (traversableNodes.Contains(tile)) ? Color.green: Color.blue;
-            Gizmos.DrawCube(new Vector3(tile.cords.x, tile.yCord ,tile.cords.z), new Vector3(.7f,1f,.7f));
+            Gizmos.DrawCube(new Vector3(tile.cords.x, tile.yCord ,tile.cords.z), new Vector3(.1f,1f,.1f));
             
         }
      }
 }
-
+public void wipeNodeLists() {
+    nodesToCheck.Clear();
+    visitedNodes.Clear();
+    traversableNodes.Clear();
+}
 public void findTraversableNodes(Node startNode, int movementResource){ //This function finds the nodes that a unit can traverse from a starting node given a movement cost.
-
-nodesToCheck.Clear();
-visitedNodes.Clear();
-traversableNodes.Clear();
+startNode.movementCost = 0;
+wipeNodeLists();
 
 Node nodeBeingChecked;
    if (!gameBoard.ContainsKey(startNode.cords))
@@ -80,7 +84,7 @@ Node nodeBeingChecked;
     while(nodesToCheck.Count > 0 ) {
     
         nodeBeingChecked = nodesToCheck.Peek();
-        if(!visitedNodes.Contains(nodeBeingChecked) && nodeBeingChecked.movementCost <= move) {
+        if(!visitedNodes.Contains(nodeBeingChecked) && nodeBeingChecked.movementCost <= movementResource) {
             traversableNodes.Add(nodeBeingChecked);
         checkNeighbors(nodeBeingChecked);
        
@@ -94,7 +98,9 @@ Node nodeBeingChecked;
             
     }
 
-
+foreach (Node n in traversableNodes) {
+    
+}
 
 } 
 private void checkNeighbors(Node node) { //This function will check the neighboring nodes of a given node 
@@ -102,7 +108,7 @@ private void checkNeighbors(Node node) { //This function will check the neighbor
 Node nodeToAdd;
 float height = node.yCord; //right now this will be only applicable to walking units and will be changed to accomodate all movement types. For now i'm keeping it basic to just walking units.
 Queue<Coordinates> cordsToCheck = 1 + node.cords;
-Debug.Log(cordsToCheck);
+
 while(cordsToCheck.Count > 0 ) {
     if(gameBoard.ContainsKey(cordsToCheck.Peek())) {
         nodeToAdd = gameBoard[cordsToCheck.Peek()];
@@ -120,16 +126,13 @@ while(cordsToCheck.Count > 0 ) {
 }
 void Awake() { //awake function, as soon as our grid gameObject gets put into the scene, this function starts and the board is initialized.
     initializeBoard();
-    
+   
 
   
     
     
 }
 
-void Update() {
-   
-}
 
 
 }
